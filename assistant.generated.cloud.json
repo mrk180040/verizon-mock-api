@@ -1,0 +1,148 @@
+{
+  "actions": [
+    {
+      "name": "Check Bill",
+      "description": "User wants to check their current bill",
+      "trigger_phrases": [
+        "check my bill",
+        "what is my bill",
+        "how much do I owe",
+        "bill amount",
+        "why is my bill high"
+      ],
+      "variables": [
+        {
+          "name": "phone_number",
+          "type": "string",
+          "entity": "@sys-number",
+          "required": true
+        }
+      ],
+      "steps": [
+        {
+          "step": "Collect phone number",
+          "response": "To verify your account, please enter your 10-digit phone number."
+        },
+        {
+          "step": "Authenticate user",
+          "webhook": {
+            "method": "POST",
+            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/auth",
+            "body": {
+              "phone": "<? $phone_number ?>"
+            }
+          },
+          "save": {
+            "authenticated": "<? response.authenticated ?>",
+            "account_id": "<? response.account_id ?>"
+          },
+          "next_step_if": {
+            "condition": "$authenticated == true",
+            "go_to": "Fetch billing"
+          }
+        },
+        {
+          "step": "Fetch billing",
+          "webhook": {
+            "method": "GET",
+            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/billing/<? $account_id ?>"
+          },
+          "response": "Your current bill is $<? response.current_amount ?>.\nDue date: <? response.due_date ?>.\nLast month: $<? response.last_month ?>."
+        }
+      ]
+    },
+    {
+      "name": "Upgrade Plan",
+      "description": "User wants to upgrade mobile plan",
+      "trigger_phrases": [
+        "upgrade my plan",
+        "change my plan",
+        "switch plan",
+        "better plan"
+      ],
+      "steps": [
+        {
+          "step": "Get current plan",
+          "webhook": {
+            "method": "GET",
+            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/plan/current"
+          },
+          "save": {
+            "current_plan": "<? response.plan ?>"
+          },
+          "response": "You are currently on <? $current_plan ?>."
+        },
+        {
+          "step": "Fetch eligible plans",
+          "webhook": {
+            "method": "GET",
+            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/plan/eligible"
+          },
+          "response": "You are eligible for:\n<? response.eligible[0].name ?> ($<? response.eligible[0].price ?>/month)\n<? response.eligible[1].name ?> ($<? response.eligible[1].price ?>/month)\n\nWould you like to switch?"
+        }
+      ]
+    },
+    {
+      "name": "Internet Issue",
+      "description": "User reports internet problem",
+      "trigger_phrases": [
+        "internet not working",
+        "wifi issue",
+        "no connection",
+        "router problem"
+      ],
+      "steps": [
+        {
+          "step": "Run diagnostics",
+          "webhook": {
+            "method": "POST",
+            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/network/diagnostics"
+          },
+          "save": {
+            "status": "<? response.status ?>",
+            "eta": "<? response.eta ?>"
+          }
+        },
+        {
+          "step": "Conditional response",
+          "response_variants": [
+            {
+              "condition": "$status == 'area_outage'",
+              "response": "There is an outage in your area. Estimated resolution time: <? $eta ?>."
+            },
+            {
+              "condition": "$status == 'router_offline'",
+              "response": "Your router appears offline. Please unplug it for 30 seconds and plug it back in."
+            },
+            {
+              "condition": "$status == 'ok'",
+              "response": "Your connection looks healthy from our side. Would you like further troubleshooting?"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Escalate to Agent",
+      "description": "User wants a human agent",
+      "trigger_phrases": [
+        "talk to agent",
+        "human",
+        "representative",
+        "customer service"
+      ],
+      "steps": [
+        {
+          "step": "Escalate",
+          "response": "I am connecting you to a live support agent now. Please hold."
+        }
+      ]
+    }
+  ],
+  "fallback": {
+    "generative_ai": {
+      "enabled": true,
+      "system_prompt": "You are a Verizon telecom assistant. Only answer based on company telecom policies. If unsure, offer to connect to a human agent. Be concise and professional."
+    }
+  }
+}

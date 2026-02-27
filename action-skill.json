@@ -1,0 +1,60 @@
+{
+  "name": "Verizon Portfolio Assistant",
+  "type": "action",
+  "actions": [
+    {
+      "name": "verizon_billing_upgrade",
+      "title": "Check Bill and Upgrade",
+      "description": "Authenticate user and retrieve billing information",
+      "steps": [
+        {
+          "name": "collect_phone",
+          "title": "Collect Phone Number",
+          "type": "collect",
+          "variable": "phone_number",
+          "question": "Please enter your 10-digit phone number."
+        },
+        {
+          "name": "call_auth",
+          "title": "Authenticate User",
+          "type": "call",
+          "operation": "authenticateUser",
+          "input": {
+            "phone": "${phone_number}"
+          }
+        },
+        {
+          "name": "check_auth",
+          "type": "branch",
+          "conditions": [
+            {
+              "condition": "${call_auth.body.authenticated} == true",
+              "next_step": "get_billing"
+            }
+          ],
+          "else": {
+            "next_step": "auth_failed"
+          }
+        },
+        {
+          "name": "auth_failed",
+          "type": "response",
+          "response": "Authentication failed. Please check your phone number."
+        },
+        {
+          "name": "get_billing",
+          "type": "call",
+          "operation": "getBillingData",
+          "input": {
+            "account_id": "${call_auth.body.account_id}"
+          }
+        },
+        {
+          "name": "show_bill",
+          "type": "response",
+          "response": "Your current bill is $${get_billing.body.current_amount}. It is due on ${get_billing.body.due_date}."
+        }
+      ]
+    }
+  ]
+}

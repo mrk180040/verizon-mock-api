@@ -1,0 +1,36 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Verizon Mock API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://networking-worked-partially-flying.trycloudflare.com"
+    }
+  ],
+  "paths": {
+    "/api/auth": {
+      "post": {
+        "operationId": "authenticateUser",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object", "properties": { "phone": { "type": "string" } } } } }
+        },
+        "responses": {
+          "200": { "description": "Success", "content": { "application/json": { "schema": { "type": "object", "properties": { "authenticated": { "type": "boolean" }, "account_id": { "type": "string" } } } } } }
+        }
+      }
+    },
+    "/api/billing/{account_id}": {
+      "get": {
+        "operationId": "getBillingData",
+        "parameters": [
+          { "name": "account_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Success", "content": { "application/json": { "schema": { "type": "object" } } } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Verizon Telecom API",
+    "version": "1.0.0",
+    "description": "API for checking bills, upgrading plans, and troubleshooting internet"
+  },
+  "servers": [
+    {
+      "url": "https://grande-deviant-confidence-folding.trycloudflare.com/api",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "summary": "Authenticate user by phone number",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone": { "type": "string" }
+                },
+                "required": ["phone"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "authenticated": { "type": "boolean" },
+                    "account_id": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/{account_id}": {
+      "get": {
+        "summary": "Get billing info",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Billing information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "current_amount": { "type": "number" },
+                    "due_date": { "type": "string" },
+                    "last_month": { "type": "number" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
