@@ -34,7 +34,8 @@
           },
           "save": {
             "authenticated": "<? response.authenticated ?>",
-            "account_id": "<? response.account_id ?>"
+            "account_id": "<? response.account_id ?>",
+            "customer_name": "<? response.name ?>"
           },
           "next_step_if": {
             "condition": "$authenticated == true",
@@ -47,7 +48,7 @@
             "method": "GET",
             "url": "http://localhost:5000/api/billing/<? $account_id ?>"
           },
-          "response": "Your current bill is $<? response.current_amount ?>.\nDue date: <? response.due_date ?>.\nLast month: $<? response.last_month ?>."
+          "response": "Thanks, <? $customer_name ?>. Your current bill is $<? response.current_amount ?>.\nDue date: <? response.due_date ?>.\nLast month: $<? response.last_month ?>."
         }
       ]
     },

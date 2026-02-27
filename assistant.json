@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "https://verizon-mock-api-1.onrender.com"
+      "url": "https://networking-worked-partially-flying.trycloudflare.com"
     }
   ],
   "paths": {

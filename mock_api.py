@@ -8,6 +8,7 @@ CORS(app)
 MOCK_USER = {
     "account_id": "A12345",
     "phone": "4695551234",
+    "name": "John Doe",
     "bill": {
         "current_amount": 142.67,
         "due_date": "2026-03-18",
@@ -32,7 +33,13 @@ def health():
 def auth():
     data = request.get_json(silent=True) or {}
     if data.get("phone") == MOCK_USER["phone"]:
-        return jsonify({"authenticated": True, "account_id": MOCK_USER["account_id"]})
+        return jsonify(
+            {
+                "authenticated": True,
+                "account_id": MOCK_USER["account_id"],
+                "name": MOCK_USER["name"],
+            }
+        )
     return jsonify({"authenticated": False}), 401
 
 

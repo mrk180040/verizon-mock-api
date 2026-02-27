@@ -27,14 +27,15 @@
           "step": "Authenticate user",
           "webhook": {
             "method": "POST",
-            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/auth",
+            "url": "https://verizon-mock-api-1.onrender.com/api/auth",
             "body": {
               "phone": "<? $phone_number ?>"
             }
           },
           "save": {
             "authenticated": "<? response.authenticated ?>",
-            "account_id": "<? response.account_id ?>"
+            "account_id": "<? response.account_id ?>",
+            "customer_name": "<? response.name ?>"
           },
           "next_step_if": {
             "condition": "$authenticated == true",
@@ -45,9 +46,9 @@
           "step": "Fetch billing",
           "webhook": {
             "method": "GET",
-            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/billing/<? $account_id ?>"
+            "url": "https://verizon-mock-api-1.onrender.com/api/billing/<? $account_id ?>"
           },
-          "response": "Your current bill is $<? response.current_amount ?>.\nDue date: <? response.due_date ?>.\nLast month: $<? response.last_month ?>."
+          "response": "Thanks, <? $customer_name ?>. Your current bill is $<? response.current_amount ?>.\nDue date: <? response.due_date ?>.\nLast month: $<? response.last_month ?>."
         }
       ]
     },
@@ -65,7 +66,7 @@
           "step": "Get current plan",
           "webhook": {
             "method": "GET",
-            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/plan/current"
+            "url": "https://verizon-mock-api-1.onrender.com/api/plan/current"
           },
           "save": {
             "current_plan": "<? response.plan ?>"
@@ -76,7 +77,7 @@
           "step": "Fetch eligible plans",
           "webhook": {
             "method": "GET",
-            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/plan/eligible"
+            "url": "https://verizon-mock-api-1.onrender.com/api/plan/eligible"
           },
           "response": "You are eligible for:\n<? response.eligible[0].name ?> ($<? response.eligible[0].price ?>/month)\n<? response.eligible[1].name ?> ($<? response.eligible[1].price ?>/month)\n\nWould you like to switch?"
         }
@@ -96,7 +97,7 @@
           "step": "Run diagnostics",
           "webhook": {
             "method": "POST",
-            "url": "https://networking-worked-partially-flying.trycloudflare.com/api/network/diagnostics"
+            "url": "https://verizon-mock-api-1.onrender.com/api/network/diagnostics"
           },
           "save": {
             "status": "<? response.status ?>",
