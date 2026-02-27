@@ -244,6 +244,107 @@
         }
       }
     },
+    "/api/billing/card-values/{account_id}": {
+      "get": {
+        "operationId": "getBillingCardValues",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Minimal values for Watson-side card rendering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "account_id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "bill_card_values": {
+                      "type": "object",
+                      "properties": {
+                        "total_due": {
+                          "type": "string"
+                        },
+                        "due_date": {
+                          "type": "string"
+                        },
+                        "new_charges": {
+                          "type": "string"
+                        },
+                        "last_bill": {
+                          "type": "string"
+                        },
+                        "plan_line": {
+                          "type": "string"
+                        },
+                        "admin_fee": {
+                          "type": "string"
+                        },
+                        "hotspot": {
+                          "type": "string"
+                        },
+                        "taxes": {
+                          "type": "string"
+                        },
+                        "what_increased": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "total_due",
+                        "due_date",
+                        "new_charges",
+                        "last_bill",
+                        "plan_line",
+                        "admin_fee",
+                        "hotspot",
+                        "taxes",
+                        "what_increased"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "account_id",
+                    "name",
+                    "bill_card_values"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/plan/current": {
       "get": {
         "operationId": "getCurrentPlan",

@@ -232,6 +232,20 @@ def billing_card(account_id):
     return jsonify(build_bill_card(user["bill_card_values"]))
 
 
+@app.get("/api/billing/card-values/<account_id>")
+def billing_card_values(account_id):
+    user = find_user_by_account(account_id)
+    if not user:
+        return jsonify({"error": "Account not found"}), 404
+    return jsonify(
+        {
+            "account_id": user["account_id"],
+            "name": user["name"],
+            "bill_card_values": user["bill_card_values"],
+        }
+    )
+
+
 @app.get("/api/plan/current")
 def current_plan():
     default_user = MOCK_USERS[0]
